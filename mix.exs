@@ -28,7 +28,7 @@ defmodule OsmShortlink.MixProject do
   end
 
   defp description() do
-    "Library that simpilfies working with mbtiles files"
+    "Library that generates short links for the given coordinates"
   end
 
   defp package() do

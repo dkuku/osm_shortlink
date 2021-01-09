@@ -4,13 +4,17 @@ defmodule OsmShortlink do
   @doc """
   Function calculates the openstreetmap short link 
   see http://wiki.openstreetmap.org/wiki/Shortlink
-  Its a port to elixir of the erlang code found in
-  osm_shortlink.erl - Krzysztof Marciniak - Public Domain
+
+  Its a port to elixir of the erlang code made by Krzysztof Marciniak - Public Domain
+
   other implementations are:
+
   https://github.com/openstreetmap/openstreetmap-website/blob/master/lib/short_link.rb
-  and makeShortCode in
+
   https://github.com/openstreetmap/openstreetmap-website/blob/master/app/assets/javascripts/application.js
+
   based on https://gist.github.com/mdornseif/5652824 by Maximillian Dornseif
+
 
   iex(76)> OsmShortlink.osm_shortlink(51.5110,0.0550, 16)
   "http://osm.org/go/0EEQjEEb"
@@ -35,27 +39,27 @@ defmodule OsmShortlink do
   end
 
   @spec interleave_bits(binary(), binary(), binary()) :: binary()
-  def interleave_bits("", "", ret), do: ret
+  defp interleave_bits("", "", ret), do: ret
 
-  def interleave_bits(<<a1::1, arest::bits>>, <<b1::1, brest::bits>>, ret) do
+  defp interleave_bits(<<a1::1, arest::bits>>, <<b1::1, brest::bits>>, ret) do
     interleave_bits(arest, brest, <<ret::bits, a1::1, b1::1>>)
   end
 
   @spec osm_shortlink_code(pos_integer(), integer(), list()) :: String.t()
-  def osm_shortlink_code(_, -1, ret), do: :erlang.list_to_binary(ret)
+  defp osm_shortlink_code(_, -1, ret), do: :erlang.list_to_binary(ret)
 
-  def osm_shortlink_code(code, z, ret) do
+  defp osm_shortlink_code(code, z, ret) do
     digit = code >>> (58 - 6 * z) &&& 63
     osm_shortlink_code(code, z - 1, [String.at(@chars, digit) | ret])
   end
 
   @spec zoom_remainder(integer()) :: String.t()
-  def zoom_remainder(zoom) do
+  defp zoom_remainder(zoom) do
     :binary.part("--", 0, rem(zoom + 8, 3))
   end
 
   @spec generate_link(String.t(), String.t(), boolean()) :: String.t()
-  def generate_link(code, zoom, marker) do
+  defp generate_link(code, zoom, marker) do
     IO.chardata_to_string(["http://osm.org/go/", code, zoom, if(marker, do: "?m", else: "")])
   end
 end
