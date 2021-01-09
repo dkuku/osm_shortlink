@@ -15,13 +15,12 @@ defmodule OsmShortlink do
 
   based on https://gist.github.com/mdornseif/5652824 by Maximillian Dornseif
 
-
-  iex> OsmShortlink.generate_link(51.5110,0.0550, 16)
-  "http://osm.org/go/0EEQjEEb"
-  iex> OsmShortlink.generate_link(51.5110,0.0550, 9)
-  "http://osm.org/go/0EEQjE--"
-  iex> OsmShortlink.generate_link(51.5110,0.0550, 9, true)
-  "http://osm.org/go/0EEQjE--?m"
+      iex> OsmShortlink.generate_link(51.5110,0.0550, 16)
+      "http://osm.org/go/0EEQjEEb"
+      iex> OsmShortlink.generate_link(51.5110,0.0550, 9)
+      "http://osm.org/go/0EEQjE--"
+      iex> OsmShortlink.generate_link(51.5110,0.0550, 9, true)
+      "http://osm.org/go/0EEQjE--?m"
   """
   def generate_link(lat, lng, zoom, marker \\ false)
 
@@ -68,8 +67,8 @@ defmodule OsmShortlink do
   @doc """
   Restores the coordinates from link
 
-  iex> OsmShortlink.link_to_coordinates("http://osm.org/go/0EEQjE--")
-  {51.510772705078125, 0.054931640625}
+      iex> OsmShortlink.link_to_coordinates("http://osm.org/go/0EEQjE--")
+      {51.510772705078125, 0.054931640625}
   """
   @spec link_to_coordinates(String.t()) :: {float(), float()}
   def link_to_coordinates("https://osm.org/go/" <> link) do
@@ -106,7 +105,7 @@ defmodule OsmShortlink do
   end
 
   @spec restore_coord(binary(), integer()) :: float()
-  def restore_coord(coord, multiplier) do
+  defp restore_coord(coord, multiplier) do
     :binary.decode_unsigned(coord) * 180 * multiplier / (1 <<< 32) - multiplier * 90
   end
 end
