@@ -69,6 +69,8 @@ defmodule OsmShortlink do
 
       iex> OsmShortlink.link_to_coordinates("http://osm.org/go/0EEQjE--")
       {51.510772705078125, 0.054931640625}
+      iex> OsmShortlink.link_to_coordinates("http://osm.org/go/0EEQjE?M")
+      {51.510772705078125, 0.054931640625}
   """
   @spec link_to_coordinates(String.t()) :: {float(), float()}
   def link_to_coordinates("https://osm.org/go/" <> link) do
@@ -81,7 +83,7 @@ defmodule OsmShortlink do
 
   def link_to_coordinates(link) do
     link
-    |> String.split("-")
+    |> String.split(["-", "?"])
     |> hd()
     |> String.split("", trim: true)
     |> Enum.filter(fn char -> char != "-" end)
