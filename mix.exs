@@ -4,7 +4,7 @@ defmodule OsmShortlink.MixProject do
   def project do
     [
       app: :osm_shortlink,
-      version: "0.1.1",
+      version: "0.1.2",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -28,7 +28,15 @@ defmodule OsmShortlink.MixProject do
   end
 
   defp description() do
-    "Library that generates short links for the given coordinates"
+    """
+    Library that generates short links for the given coordinates
+
+        iex> OsmShortlink.generate_link(51.5110,0.0550, 9)
+        "http://osm.org/go/0EEQjE--"
+        iex> OsmShortlink.link_to_coordinates("http://osm.org/go/0EEQjE?M")
+        {51.510772705078125, 0.054931640625}
+
+    """
   end
 
   defp package() do

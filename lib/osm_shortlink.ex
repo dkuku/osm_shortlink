@@ -104,17 +104,17 @@ defmodule OsmShortlink do
     |> Enum.map(fn char -> :binary.match(@chars, char) |> elem(0) end)
     |> Enum.reverse()
     |> Enum.reduce(<<>>, fn six_bit_val, acc -> <<six_bit_val::6, acc::bits>> end)
-    |> restore_coords("", "")
+    |> restore_coordinates("", "")
   end
 
-  @spec restore_coords(binary(), binary(), binary()) :: {float(), float()}
-  defp restore_coords(<<a1::1, b1::1, rest::bits>> = _interleaved_bits, a, b) do
-    restore_coords(rest, <<a::bits, a1::1>>, <<b::bits, b1::1>>)
+  @spec restore_coordinates(binary(), binary(), binary()) :: {float(), float()}
+  defp restore_coordinates(<<a1::1, b1::1, rest::bits>> = _interleaved_bits, a, b) do
+    restore_coordinates(rest, <<a::bits, a1::1>>, <<b::bits, b1::1>>)
   end
 
-  defp restore_coords("", a, b) do
+  defp restore_coordinates("", a, b) do
     if bit_size(a) < 32 do
-      restore_coords("", <<a::bits, 0::1>>, <<b::bits, 0::1>>)
+      restore_coordinates("", <<a::bits, 0::1>>, <<b::bits, 0::1>>)
     else
       {restore_coord(b, 1), restore_coord(a, 2)}
     end
