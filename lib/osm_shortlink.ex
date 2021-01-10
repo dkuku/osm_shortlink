@@ -2,6 +2,8 @@ defmodule OsmShortlink do
   use Bitwise
   @chars "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_~"
   @bits_32 1 <<< 32
+  @osm_base_http "http://osm.org/go/"
+  @osm_base_https "https://osm.org/go/"
   @doc """
   Function calculates the openstreetmap short link 
   see http://wiki.openstreetmap.org/wiki/Shortlink
@@ -59,7 +61,7 @@ defmodule OsmShortlink do
   end
 
   @spec generate_link_code(pos_integer(), integer(), list()) :: String.t()
-  defp generate_link_code(_, -1, ret), do: :erlang.list_to_binary(ret)
+  defp generate_link_code(_, -1, ret), do: Enum.join(ret)
 
   defp generate_link_code(code, z, ret) do
     digit = code >>> (58 - 6 * z) &&& 63
@@ -68,12 +70,13 @@ defmodule OsmShortlink do
 
   @spec zoom_remainder(integer()) :: String.t()
   defp zoom_remainder(zoom) do
-    :binary.part("--", 0, rem(zoom + 8, 3))
+    zoom_dashes = Integer.mod(zoom + 8, 3)
+    String.duplicate("-", zoom_dashes)
   end
 
   @spec generate_string(String.t(), String.t(), boolean()) :: String.t()
   defp generate_string(code, zoom, marker) do
-    IO.chardata_to_string(["http://osm.org/go/", code, zoom, if(marker, do: "?m", else: "")])
+    IO.chardata_to_string([@osm_base_http, code, zoom, if(marker, do: "?m", else: "")])
   end
 
   @doc """
@@ -85,11 +88,11 @@ defmodule OsmShortlink do
       {51.510772705078125, 0.054931640625}
   """
   @spec link_to_coordinates(String.t()) :: {float(), float()}
-  def link_to_coordinates("https://osm.org/go/" <> link) do
+  def link_to_coordinates(@osm_base_https <> link) do
     link_to_coordinates(link)
   end
 
-  def link_to_coordinates("http://osm.org/go/" <> link) do
+  def link_to_coordinates(@osm_base_http <> link) do
     link_to_coordinates(link)
   end
 
