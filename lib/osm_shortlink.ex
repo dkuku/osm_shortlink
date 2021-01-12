@@ -29,8 +29,8 @@ defmodule OsmShortlink do
 
   @spec generate_link(number(), number(), pos_integer(), boolean()) :: binary()
   def generate_link(lat, lng, zoom, marker) when zoom >= 0 do
-    x = trunc((lng + 180) * @bits_32 / 360)
-    y = trunc((lat + 90) * @bits_32 / 180)
+    x = trunc((lng + 180) / 360 * @bits_32)
+    y = trunc((lat + 90) / 180 * @bits_32)
 
     <<code::64>> = interleave_bits(<<x::32>>, <<y::32>>)
 
